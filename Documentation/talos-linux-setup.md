@@ -31,7 +31,7 @@ Once the node boots up, I did the following:
 
 1. Press F3 to enter the `Network Config` tab
 2. I configured my nodes with the following information, but you are free to do as you wish:
-    - Hostname: I set mine to `k8-cluster-01` which will get incremented with each node
+    - Hostname: I set mine to `talos-01` which will get incremented with each node
     - DNS Servers: I set mine to `1.1.1.1` and `8.8.8.8` but I plan to replace it with my own DNS server eventually
     - Time Servers: I left it blank and it initialized to `time.cloudflare.com`
     - Interface: I picked the only available option which was `eno01`
@@ -71,6 +71,13 @@ NODE   NAMESPACE   TYPE   ID        VERSION   SIZE
 
 If your node is defaulting `/dev/sda` to the USB, you can follow these steps to fix it:
 
+Using `sed`:
+
+1. Run the command: `STORAGE_ID=[storage ID]`
+2. Run the command: `sed -i "s/\/dev\/sda/\/dev\/$STORAGE_ID/g" controlplane.yaml`
+
+Manually:
+
 1. Copy down the ID of the storage you want to install the Talos Linux OS to (`nvme0n1` in my case)
 2. Edit `controlplane.yaml` in the editor of your choice
 3. Search for `disk: /dev/sda`
@@ -99,12 +106,6 @@ You may also want to add the line below to `~/.bashrc`
 
 ```bash
 export TALOSCONFIG=[path to talosconfig]
-```
-
-### Create a context name for Talos
-
-```bash
-talosctl config context [context name]
 ```
 
 ### Define your endpoint
@@ -149,6 +150,6 @@ If you run the command `kubectl get nodes`, you should get the following:
 
 ```text
 NAME            STATUS   ROLES           AGE     VERSION
-k8-cluster-01   Ready    control-plane   4h10m   v1.36.0
-k8-cluster-02   Ready    <none>          3h19m   v1.36.0
+talos-01        Ready    control-plane   4h10m   v1.36.0
+talos-02        Ready    <none>          3h19m   v1.36.0
 ```
