@@ -46,15 +46,30 @@ Once the node boots up, I did the following:
 curl -sL https://talos.dev/install | sh
 ```
 
+### Create your cilium-talos-patch.yaml file
+
+Create a `.yaml` file with the contents:
+
+```text
+---
+cluster:
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true
+
+```
+
 ### Generate the configuration file
 
 ```bash
-talosctl gen config [cluster name] https://[server endpoint]:6443
+talosctl gen config [cluster name] https://[node IP]:6443 --config-patch @[path to cilium-talos-patch.yaml]
 ```
 
 ### Verifying and/or installing Talos Linux to the disk
 
-By default, Talos Linux installs itself to `/dev/sda` which may cause a problem if `/dev/sda` is defaulting to the wrong storage.
+By default, Talos Linux installs itself to `/dev/sda`, which may cause a problem if `/dev/sda` is defaulting to the wrong storage.
 
 You can run the command `talosctl -n [node IP] get disks --insecure` to get the disks on the node. As you can see below, `/dev/sda` is defaulting to the bootable USB while the actual storage has an ID of `nvme0n1`.
 
@@ -84,17 +99,16 @@ Manually:
 4. Replace `sda` with the ID of your preferred storage
 
 > [!WARNING]
-> If you want your Kubernetes control-plane nodes to run workloads, you need to uncomment the line in `controlplane.yaml` that contains `# allowSchedulingOnControlPlanes: true`.
+> If you want your Kubernetes control-plane nodes to run workloads, you can run the command: `sed -i "s/# allowSchedulingOnControlPlanes: true
+/allowSchedulingOnControlPlanes: true/g" controlplane.yaml`.
 
 ### Applying your configuration file
-
-I will cover installing cilium as a CNI in a later doc which will include applying a new configuration file, but this will work for now.
 
 ```bash
 talosctl apply-config -n [node IP] --insecure --file [path to controlplane.yaml]
 ```
 
-### Bootstrapping kubernetes
+### Bootstrapping Kubernetes
 
 ```bash
 talosctl bootstrap --nodes [node IP] --endpoints [node IP] --talosconfig=[path to talosconfig]
@@ -128,6 +142,35 @@ Make sure you have `kubectl` installed.
 kubectl get nodes
 ```
 
+### Installing Cilium using Helm
+
+You need to have Helm installed, which can be done with `sudo snap install helm --classic`.
+
+```bash
+helm repo add cilium https://helm.cilium.io/
+
+helm repo update
+
+helm install cilium cilium/cilium \
+  --namespace kube-system \
+  --set ipam.mode=kubernetes \
+  --set kubeProxyReplacement=true \
+  --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
+  --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
+  --set cgroup.autoMount.enabled=false \
+  --set cgroup.hostRoot=/sys/fs/cgroup \
+  --set k8sServiceHost=localhost \
+  --set k8sServicePort=7445 \
+  --set hubble.enabled=true \
+  --set hubble.relay.enabled=true \
+  --set hubble.ui.enabled=true \
+  --set hubble.metrics.enabled="{dns,drop,tcp,flow,icmp,http}" \
+  --set hubble.ui.service.type=NodePort \
+  --set hubble.ui.service.nodePort=31235
+```
+
+You can now access the hubble UI by going to `http://[node IP]:31235/`
+
 ## Adding an agent node
 
 ### Prerequisites
@@ -144,7 +187,7 @@ kubectl get nodes
 talosctl apply-config --insecure --nodes [node IP] --file [path to worker.yaml]
 ```
 
-### Final Verification
+### Final verification
 
 If you run the command `kubectl get nodes`, you should get the following:
 
