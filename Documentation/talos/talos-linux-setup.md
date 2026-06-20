@@ -99,8 +99,7 @@ Manually:
 4. Replace `sda` with the ID of your preferred storage
 
 > [!WARNING]
-> If you want your Kubernetes control-plane nodes to run workloads, you can run the command: `sed -i "s/# allowSchedulingOnControlPlanes: true
-/allowSchedulingOnControlPlanes: true/g" controlplane.yaml`.
+> If you want your Kubernetes control-plane nodes to run workloads, you can run the command: `sed -i "s/# allowSchedulingOnControlPlanes: true/allowSchedulingOnControlPlanes: true/g" controlplane.yaml`.
 
 ### Applying your configuration file
 
