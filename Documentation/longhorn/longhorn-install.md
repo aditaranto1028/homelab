@@ -5,7 +5,7 @@
 > - `iscsi-tools`
 > - `linux-utils`
 >
-> You can find my documentation on how to add extensions in Talos Linux [here](https://github.com/aditaranto1028/homelab/blob/main/Documentation/talos/talos-linux-upgrade.md).
+> You can find my documentation on how to add extensions in Talos Linux [here](https://github.com/aditaranto1028/homelab/blob/main/Documentation/talos/talos-linux-upgrade.md). You **must** also have `argocd` installed in your cluster and the `argocd` CLI tool.
 
 ### Create a namespace with privileged access
 
@@ -31,21 +31,59 @@ kubectl apply -f [path to namespace.yaml]
 
 ### Install Longhorn
 
-Create a values file with the following contents (you can add or remove whatever you want):
+#### Log in to `argocd`
+
+```bash
+argocd login --core
+```
+
+#### Set the Kubernetes namespace to `argocd`
+
+```bash
+kubectl config set-context --current --namespace=argocd
+```
+
+#### Create a Longhorn application resource
+
+Create an application resource file with the contents below:
 
 ```yaml
 ---
-preUpgradeChecker:
-  jobEnabled: false
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+spec:
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  project: default
+  sources:
+    - chart: longhorn
+      repoURL: https://charts.longhorn.io/
+      targetRevision: v1.12.0 # Replace
+      helm:
+        valueFiles:
+          - $values/kubernetes/longhorn/values.yaml # Replace
+    - repoURL: https://github.com/aditaranto1028/homelab.git # Replace
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
 ```
 
-Run the following `helm` command to install Longhorn:
+Apply the application resource:
 
 ```bash
-helm install longhorn longhorn \
-  --repo https://charts.longhorn.io/ \
-  --namespace longhorn-system \
-  --values [path to values.yaml]
+kubectl apply -f [path to application.yaml]
+```
+
+#### Deploy Longhorn
+
+```bash
+argocd app sync longhorn
 ```
 
 ### Configure default backup target
@@ -53,6 +91,7 @@ helm install longhorn longhorn \
 Create a backup target file with the following contents:
 
 ```yaml
+---
 apiVersion: longhorn.io/v1beta2
 kind: BackupTarget
 metadata:
