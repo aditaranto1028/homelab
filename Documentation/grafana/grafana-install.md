@@ -70,6 +70,11 @@ At the path specified above, create a file with the contents below:
 ---
 service:
   type: ClusterIP
+persistence:
+  accessMode: ReadWriteOnce
+  size: 4Gi
+  enabled: true
+  storageClassName: longhorn
 datasources:
   datasources.yaml:
     apiVersion: 1
