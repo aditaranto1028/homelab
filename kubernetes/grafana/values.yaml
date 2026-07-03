@@ -4,6 +4,7 @@ service:
 persistence:
   accessMode: ReadWriteOnce
   size: 4Gi
+  enabled: true
   storageClassName: longhorn
 datasources:
   datasources.yaml:
