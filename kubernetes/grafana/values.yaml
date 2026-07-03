@@ -1,6 +1,10 @@
 ---
 service:
   type: ClusterIP
+persistence:
+  accessMode: ReadWriteOnce
+  size: 4Gi
+  storageClassName: longhorn
 datasources:
   datasources.yaml:
     apiVersion: 1
