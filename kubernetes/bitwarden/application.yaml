@@ -16,8 +16,8 @@ spec:
       targetRevision: HEAD
       ref: values
     - repoURL: https://charts.bitwarden.com
-      chart: bitwarden
-      targetRevision: 1.32.0
+      chart: self-host
+      targetRevision: 2.0.2
       helm:
         valueFiles:
           - $values/kubernetes/bitwarden/values.yaml
