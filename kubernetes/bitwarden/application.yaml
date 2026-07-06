@@ -1,0 +1,29 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bitwarden
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: bitwarden
+    server: https://kubernetes.default.svc
+  project: default
+  sources:
+    - repoURL: https://github.com/aditaranto1028/homelab.git
+      targetRevision: HEAD
+      ref: values
+    - repoURL: https://charts.bitwarden.com
+      chart: bitwarden
+      targetRevision: 1.32.0
+      helm:
+        valueFiles:
+          - $values/kubernetes/bitwarden/values.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
