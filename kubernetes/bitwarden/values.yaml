@@ -1,8 +1,7 @@
 ---
 general:
   domain: http://192.168.1.11:30080
-  admins:
-    - aditaranto1028@gmail.com
+  admins: "aditaranto1028@gmail.com"
   ingress:
     enabled: false
   signupsAllowed: false
