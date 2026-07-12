@@ -13,14 +13,8 @@ spec:
   project: default
   sources:
     - repoURL: https://github.com/aditaranto1028/homelab.git
-      targetRevision: HEAD
-      ref: values
-    - repoURL: https://prometheus-community.github.io/helm-charts/
-      chart: prometheus
-      targetRevision: 29.9.0
-      helm:
-        valueFiles:
-          - $values/kubernetes/prometheus/values.yaml
+      targetRevision: main
+      path: kubernetes/prometheus
   syncPolicy:
     automated:
       prune: true
