@@ -15,7 +15,7 @@ spec:
       targetRevision: v1.12.0
       helm:
         valueFiles:
-          - $values/kubernetes/longhorn/values.yaml
+          - $values/argocd/longhorn/values.yaml
     - repoURL: https://github.com/aditaranto1028/homelab.git
       targetRevision: HEAD
       ref: values
