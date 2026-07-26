@@ -46,25 +46,10 @@ Once the node boots up, I did the following:
 curl -sL https://talos.dev/install | sh
 ```
 
-### Create your cilium-talos-patch.yaml file
-
-Create a `.yaml` file with the contents:
-
-```text
----
-cluster:
-  network:
-    cni:
-      name: none
-  proxy:
-    disabled: true
-
-```
-
 ### Generate the configuration file
 
 ```bash
-talosctl gen config [cluster name] https://[node IP]:6443 --config-patch @[path to cilium-talos-patch.yaml]
+talosctl gen config [cluster name] https://[node IP]:6443
 ```
 
 ### Verifying and/or installing Talos Linux to the disk
@@ -140,35 +125,6 @@ Make sure you have `kubectl` installed.
 ```bash
 kubectl get nodes
 ```
-
-### Installing Cilium using Helm
-
-You need to have Helm installed, which can be done with `sudo snap install helm --classic`.
-
-```bash
-helm repo add cilium https://helm.cilium.io/
-
-helm repo update
-
-helm install cilium cilium/cilium \
-  --namespace kube-system \
-  --set ipam.mode=kubernetes \
-  --set kubeProxyReplacement=true \
-  --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
-  --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
-  --set cgroup.autoMount.enabled=false \
-  --set cgroup.hostRoot=/sys/fs/cgroup \
-  --set k8sServiceHost=localhost \
-  --set k8sServicePort=7445 \
-  --set hubble.enabled=true \
-  --set hubble.relay.enabled=true \
-  --set hubble.ui.enabled=true \
-  --set hubble.metrics.enabled="{dns,drop,tcp,flow,icmp,http}" \
-  --set hubble.ui.service.type=NodePort \
-  --set hubble.ui.service.nodePort=31235
-```
-
-You can now access the hubble UI by going to `http://[node IP]:31235/`
 
 ## Adding an agent node
 
