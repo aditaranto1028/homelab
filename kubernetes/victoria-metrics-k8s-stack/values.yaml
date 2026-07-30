@@ -1,0 +1,32 @@
+victoria-metrics-operator:
+  admissionWebhooks:
+    certManager:
+      enabled: false
+grafana:
+  enabled: true
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: longhorn
+    accessModes:
+      - ReadWriteOnce
+    size: 2Gi
+vmsingle:
+  enabled: false
+vmcluster:
+  enabled: true
+  spec:
+    retentionPeriod: "12"
+    vmstorage:
+      replicaCount: 2
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: longhorn
+            resources:
+              requests:
+                storage: 25Gi
+    vminsert:
+      replicaCount: 2
+    vmselect:
+      replicaCount: 2
