@@ -1,0 +1,6 @@
+---
+ffr-k8s:
+  prometheus:
+    serviceMonitor:
+      enabled: false
+
