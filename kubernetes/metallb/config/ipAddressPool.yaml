@@ -1,0 +1,11 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: homelab-static
+  namespace: metallb
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  addresses:
+  - 192.168.1.2-192.168.1.50
