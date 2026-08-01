@@ -1,0 +1,27 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+  namespace: argocd
+spec:
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  project: default
+  sources:
+    - chart: metallb
+      repoURL: https://metallb.github.io/metallb
+      targetRevision: 0.16.0
+      helm:
+        valueFiles:
+          - $values/kubernetes/metallb/values.yaml
+    - repoURL: https://github.com/aditaranto1028/homelab.git
+      targetRevision: HEAD
+      ref: values
+    - repoURL: https://github.com/aditaranto1028/homelab.git
+      targetRevision: HEAD
+      path: kubernetes/metallb/config
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: metallb
