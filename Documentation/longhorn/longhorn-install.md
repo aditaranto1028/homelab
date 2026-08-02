@@ -43,7 +43,24 @@ argocd login --core
 kubectl config set-context --current --namespace=argocd
 ```
 
-#### Create a Longhorn application resource
+#### Create a values file
+
+> [!NOTE]
+> If you do not have a network load balancer like MetalLB, you can skip below to the `ClusterIP` section to see what you should do differently.
+
+Create the values file with the contents below:
+
+```yaml
+---
+service:
+  ui:
+    type: LoadBalancer
+    loadBalancerIP: "x.x.x.x" # Replace
+preUpgradeChecker:
+  jobEnabled: false
+```
+
+#### Create an ArgoCD application resource
 
 Create an application resource file with the contents below:
 
@@ -148,10 +165,40 @@ longhorn (default)   driver.longhorn.io   Delete          Immediate           tr
 longhorn-static      driver.longhorn.io   Delete          Immediate           true                   13d
 ```
 
+> [!NOTE]
+> After syncing longhorn, if ArgoCD says the application is out of sync. If you are able to identify that the only resource out of sync is `longhorn-frontend`, you can do the following.
+> - Click on the `longhorn-frontend` resource in ArgoCD
+> - Scroll down and select DIFF
+> - If the only difference is a node port, run the command: `kubectl patch svc longhorn-frontend -n longhorn-system --type=merge -p '{"spec":{"allocateLoadBalancerNodePorts":false}}'`
+
 ### Access the UI
 
-There are more steps to access the Longhorn UI, which I have not done yet, but you can run the command below to temporarily access it:
+Longhorn should automatically get a load balancer IP.
 
-```bash
-kubectl port-forward service/longhorn-frontend 8080:80 -n longhorn-system
+To verify, you can run the command: `kubectl get svc -n longhorn-system`
+
+Expected output:
+
+```text
+NAME                         TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)    AGE
+longhorn-admission-webhook   ClusterIP      10.111.43.20    <none>         9502/TCP   6d3h
+longhorn-backend             ClusterIP      10.106.18.119   <none>         9500/TCP   6d3h
+longhorn-frontend            LoadBalancer   10.100.75.108   192.168.1.17   80/TCP     6d3h
+longhorn-recovery-backend    ClusterIP      10.107.91.10    <none>         9503/TCP   6d3h
 ```
+
+### ClusterIP
+
+#### Create a values file
+
+Create the values file with the contents below:
+
+```yaml
+---
+preUpgradeChecker:
+  jobEnabled: false
+```
+
+With the change above, you can follow in the documentation from where you left off. With the ClusterIP, to access the UI, you need to run this command every time: `kubectl port-forward service/longhorn-frontend 8080:80 -n longhorn-system`.
+
+To upgrade to a `loadBalancerIP` later on, you just need to use the previous values file and then sync longhorn with ArgoCD.
