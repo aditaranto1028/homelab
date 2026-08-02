@@ -1,0 +1,21 @@
+---
+vikunja:
+  configMaps:
+    config:
+      data:
+        config.yml: |
+          mailer:
+            enabled: true
+            host: "smtp.gmail.com"
+            username: "vikunja.ditaranto@gmail.com"
+            port: 587
+            forcessl: false
+          service:
+            publicurl: "http://192.168.1.18"
+          defaultsettings:
+            email_reminders_enabled: true
+  env:
+    VIKUNJA_DATABASE_TYPE: "sqlite"
+  envFrom:
+    - secretRef:
+        name: vikunja-mailer-secret
