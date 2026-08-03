@@ -1,0 +1,27 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vikunja
+  namespace: argocd
+spec:
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  project: default
+  sources:
+    - chart: vikunja
+      repoURL: oci://ghcr.io/go-vikunja/helm-chart/vikunja
+      targetRevision: v2.0.2
+      helm:
+        valueFiles:
+          - $values/kubernetes/vikunja/values.yaml
+    - repoURL: https://github.com/aditaranto1028/homelab.git
+      targetRevision: HEAD
+      ref: values
+    - repoURL: https://github.com/aditaranto1028/homelab.git
+      targetRevision: HEAD
+      path: kubernetes/vikunja/config
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: vikunja
