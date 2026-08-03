@@ -26,18 +26,17 @@ rm argocd-linux-amd64
 ### Access Argo CD
 
 There are many ways to access Argo CD, with some options being:
-
 - Making Argo CD the `LoadBalancer` service type (my current choice)
 - Kubernetes ingress controller
 - Kubernetes port forwarding
 
-#### Port Forwarding (default)
+#### Port forwarding (default)
 
 ```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
-#### Load Balancer (my current choice)
+#### Load balancer (my current choice)
 
 > [!NOTE]
 > Prerequisites:
