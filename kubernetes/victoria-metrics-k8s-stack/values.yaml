@@ -11,6 +11,9 @@ grafana:
     accessModes:
       - ReadWriteOnce
     size: 2Gi
+  service:
+    type: LoadBalancer
+    loadBalancerIP: "192.168.1.19"
 vmsingle:
   enabled: false
 vmcluster:
@@ -30,3 +33,7 @@ vmcluster:
       replicaCount: 2
     vmselect:
       replicaCount: 2
+      serviceSpec:
+        spec:
+          type: LoadBalancer
+          loadBalancerIP: "192.168.1.20"
