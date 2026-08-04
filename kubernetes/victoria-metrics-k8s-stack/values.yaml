@@ -28,7 +28,7 @@ vmcluster:
             storageClassName: longhorn
             resources:
               requests:
-                storage: 25Gi
+                storage: 20Gi
     vminsert:
       replicaCount: 2
     vmselect:
