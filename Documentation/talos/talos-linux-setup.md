@@ -249,12 +249,21 @@ curl -L https://github.com/projectcalico/calico/releases/download/v3.27.0/calico
 chmod +x calicoctl
 sudo mv calicoctl /usr/local/bin/
 
-export CALICO_DATASTORE_TYPE=kubernetes
-export CALICO_KUBECONFIG=~/.kube/config
+export DATASTORE_TYPE=kubernetes
+export KUBECONFIG=/home/anthony/.kube/config
 ```
 
 ##### Verification
 
 ```bash
-calicoctl node status
+kubectl get pod -n calico-system
+# NAME                                       READY   STATUS    RESTARTS   AGE
+# calico-kube-controllers-55546b8856-2vs7c   1/1     Running   0          88m
+# calico-node-8stnt                          1/1     Running   0          88m
+# calico-node-b2mq6                          1/1     Running   0          88m
+# calico-typha-64c9c9ff4d-mc8fn              1/1     Running   0          88m
+# csi-node-driver-c77jf                      2/2     Running   0          88m
+#csi-node-driver-qlxxc                      2/2     Running   0          88m
+
+kubectl exec -n calico-system [calico-node] -- birdcl -s /var/run/calico/bird.ctl show protocols
 ```
