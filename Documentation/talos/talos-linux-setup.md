@@ -48,6 +48,30 @@ curl -sL https://talos.dev/install | sh
 
 ### Generate the configuration file
 
+##### Calico patch file
+
+If you plan on using Calico, create a patch file with the contents below:
+
+```yaml
+cluster:
+  network:
+    cni:
+      name: none
+    podSubnets:
+      - 10.244.0.0/16
+    serviceSubnets:
+      - 10.96.0.0/12
+```
+
+Run the command:
+
+```bash
+talosctl gen config [cluster name] https://[node IP]:6443 \
+  --config-patch @[path to patch.yaml]
+```
+
+##### Flannel CNI (Talos Linux default)
+
 ```bash
 talosctl gen config [cluster name] https://[node IP]:6443
 ```
@@ -142,12 +166,95 @@ kubectl get nodes
 talosctl apply-config --insecure --nodes [node IP] --file [path to worker.yaml]
 ```
 
-### Final verification
+### Verification
 
 If you run the command `kubectl get nodes`, you should get the following:
 
 ```text
 NAME            STATUS   ROLES           AGE     VERSION
-talos-01        Ready    control-plane   4h10m   v1.36.0
-talos-02        Ready    <none>          3h19m   v1.36.0
+talos-01        NotReady    control-plane   4h10m   v1.36.0
+talos-02        NotReady    <none>          3h19m   v1.36.0
+```
+
+### Install Calico using the Tigera Operator
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/tigera-operator.yaml
+
+kubectl get pods -n tigera-operator --watch
+```
+
+### Create an installation resource
+
+Create a file called `installation.yaml` with the contents below:
+
+```yaml
+---
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  calicoNetwork:
+    ipPools:
+    - blockSize: 26
+      cidr: 10.244.0.0/16
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+    linuxDataplane: Iptables
+  flexVolumePath: /var/lib/kubelet/volumeplugins
+  nodeMetricsPort: 9091
+---
+apiVersion: operator.tigera.io/v1
+kind: APIServer
+metadata:
+  name: default
+spec: {}
+```
+
+Run the command:
+
+```bash
+kubectl apply -f [path to installation.yaml]
+
+kubectl get pods -n calico-system --watch
+```
+
+### Wait for Calico to be ready
+
+```bash
+kubectl get pods -n calico-system
+
+kubectl get pods -n calico-apiserver
+
+kubectl get nodes
+# NAME       STATUS   ROLES           AGE   VERSION
+# talos-01   Ready    control-plane   68m   v1.36.0
+# talos-02   Ready    <none>          66m   v1.36.0
+```
+
+### Install calicoctl
+
+##### Brew
+
+```bash
+brew install calicoctl
+```
+
+##### Download directly
+
+```bash
+curl -L https://github.com/projectcalico/calico/releases/download/v3.27.0/calicoctl-linux-amd64 -o calicoctl
+chmod +x calicoctl
+sudo mv calicoctl /usr/local/bin/
+
+export CALICO_DATASTORE_TYPE=kubernetes
+export CALICO_KUBECONFIG=~/.kube/config
+```
+
+##### Verification
+
+```bash
+calicoctl node status
 ```
