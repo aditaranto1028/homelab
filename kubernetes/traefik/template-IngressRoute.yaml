@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: <SERVICE>-ingressroute
+  namespace: <NAMESPACE>
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`<SERVICE>.ditaranto-homelab.com`)
+      kind: Rule
+      services:
+        - name: <SERVICE>
+          port: <PORT>
+  tls:
+    secretName: <SERVICE>-certificate-secret
