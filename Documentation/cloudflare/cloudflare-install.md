@@ -21,6 +21,40 @@ Navigate to https://one.dash.cloudflare.com/ and do the following:
 cloudflared.exe service install [token]
 ```
 
+### Secure your Cloudflare tunnel
+
+> [!WARNING]
+> By default the Cloudflare tunnel created in this documentation will allow anyone to publicly access the services that you configure. The following will show you how to set up some security for your tunnel.
+
+##### Get your public IP
+
+Run the command:
+
+```bash
+curl https://www.cloudflare.com/cdn-cgi/trace | grep ip=
+```
+
+##### Create an IP list (can be updated by an API) and block rule
+
+Navigate to https://dash.cloudflare.com and do the following:
+
+- Click on your domain
+- On the left-hand side click `Security`
+- Click `Security rules`
+- In the `Custom rules` section, click `Create rule`
+- Give the rule a name you will remember later (only so you can identify the rule)
+- Click `Manage lists`
+- Click `Create IP list` and name it `home_ip`
+- Click `Create`
+- Paste the public IP and select `Add to list`
+- Click `< Back`
+- Navigate back to where you selected `Manage lists`
+- Click `Edit expression`
+- Paste in `(not ip.src in $home_ip)`
+- Under `Then take action...` put `Block`
+- Click `Deploy`
+- Click `Deploy`
+
 ### Create the Cloudflare tunnel token secret
 
 Run the command:
