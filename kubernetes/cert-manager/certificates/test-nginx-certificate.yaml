@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: test-nginx-certificate
+  namespace: test-nginx
+spec:
+  secretName: test-nginx-certificate-secret
+  issuerRef:
+    name: cloudflare-clusterissuer
+    kind: ClusterIssuer
+  dnsNames:
+    - test-nginx.ditaranto-homelab.com
