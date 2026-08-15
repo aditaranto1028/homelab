@@ -31,6 +31,9 @@ spec:
     - repoURL: https://github.com/aditaranto1028/homelab.git
       targetRevision: HEAD
       path: kubernetes/cert-manager/config
+    - repoURL: https://github.com/aditaranto1028/homelab.git
+      targetRevision: HEAD
+      path: kubernetes/cert-manager/certificates
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager

@@ -19,6 +19,9 @@ spec:
     - repoURL: https://github.com/aditaranto1028/homelab.git
       targetRevision: HEAD
       ref: values
+    - repoURL: https://github.com/aditaranto1028/homelab.git
+      targetRevision: HEAD
+      path: kubernetes/traefik/ingressRoutes
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik
