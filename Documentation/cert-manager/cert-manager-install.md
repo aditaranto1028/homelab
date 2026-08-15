@@ -14,7 +14,7 @@ Run the command:
 
 ```bash
 kubectl create secret generic cloudflare-api-token-secret \
-  --from-literal=token='[API token]' \
+  --from-literal=api-token='[API token]' \
   -n cert-manager
 ```
 
