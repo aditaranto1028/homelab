@@ -74,7 +74,7 @@ vmcluster:
           loadBalancerIP: "x.x.x.y"
 ```
 
-Alternatively, if you want to always port-forward your pod, your `values.yaml` can look like this:
+Alternatively, if you want to always port-forward your pod or use traefik, your `values.yaml` can look like this:
 
 ```yaml
 victoria-metrics-operator:
@@ -181,12 +181,68 @@ vmks       Synced        Healthy
 
 ### Access the UI
 
-#### Grafana
+#### ClusterIP (my current choice)
+
+When the services have ClusterIPs, you can use an ingress controller like Traefik or port-forward the service every time.
+
+> [!NOTE]
+> Prerequisites:
+> - [Traefik](https://github.com/aditaranto1028/homelab/blob/main/Documentation/traefik/traefik-install.md)
+> - [Cert-manager](https://github.com/aditaranto1028/homelab/blob/main/Documentation/cert-manager/cert-manager-install.md)
+> - A registered domain (i.e. ditaranto-homelab.com)
+
+Follow my [documentation](https://github.com/aditaranto1028/homelab/blob/main/Documentation/traefik/ingressRoute-and-certificate.md) on how to set up the ingress route, middleware, certificate, and published application route.
+
+Grafana can use a simple ingress route and certificate, while Victoria Metrics UI also requires a middleware to redirect `/` to `select/<accountID>/vmui/`.
+
+An example ingress route + middleware for Victoria Metrics UI would be:
+
+```yaml
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vmui-ingressroute
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`vmui.ditaranto-homelab.com`) && Path(`/`)
+      kind: Rule
+      middlewares:
+        - name: vmui-redirect
+      services:
+        - name: vmselect-vmks-victoria-metrics-k8s-stack
+          port: 8481
+    - match: Host(`vmui.ditaranto-homelab.com`) # Replace
+      kind: Rule
+      services:
+        - name: vmselect-vmks-victoria-metrics-k8s-stack
+          port: 8481
+  tls:
+    secretName: vmui-certificate-secret
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: vmui-redirect
+  namespace: monitoring
+spec:
+  redirectRegex:
+    regex: "^https://vmui\\.ditaranto-homelab\\.com/?$" # Replace
+    replacement: "https://vmui.ditaranto-homelab.com/select/0/vmui" # Replace
+    permanent: true
+```
+
+#### LoadBalancerIP
+
+##### Grafana
 
 Open a web browser and navigate to "http://[grafana IP / hostname]" and sign in with the following credentials:
 - Username: admin
 - Password: [Run the command: `kubectl get secrets vmks-grafana -o json -n monitoring | jq -r '.data["admin-password"]' | base64 --decode`]
 
-#### VMSelect
+##### VMSelect
 
 Open a web browser and navigate to "http://[VMSelect IP / hostname]:8481/select/0/vmui"
