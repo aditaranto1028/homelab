@@ -4,6 +4,8 @@
 > The following Talos Linux extensions need to be installed as a prerequisite for Longhorn:
 > - `iscsi-tools`
 > - `linux-utils`
+> - [Traefik](https://github.com/aditaranto1028/homelab/blob/main/Documentation/traefik/traefik-install.md) (optional)
+> - [Cert-manager](https://github.com/aditaranto1028/homelab/blob/main/Documentation/cert-manager/cert-manager-install.md) (optional)
 >
 > You can find my documentation on how to add extensions in Talos Linux [here](https://github.com/aditaranto1028/homelab/blob/main/Documentation/talos/talos-linux-upgrade.md). You **must** also have `argocd` installed in your cluster and the `argocd` CLI tool.
 
@@ -173,6 +175,8 @@ longhorn-static      driver.longhorn.io   Delete          Immediate           tr
 
 ### Access the UI
 
+#### LoadBalancerIP (good choice)
+
 Longhorn should automatically get a load balancer IP.
 
 To verify, you can run the command: `kubectl get svc -n longhorn-system`
@@ -199,6 +203,24 @@ preUpgradeChecker:
   jobEnabled: false
 ```
 
-With the change above, you can follow in the documentation from where you left off. With the ClusterIP, to access the UI, you need to run this command every time: `kubectl port-forward service/longhorn-frontend 8080:80 -n longhorn-system`.
+With the change above, you can follow in the documentation from where you left off. With the ClusterIP, to access the UI, you have two options:
 
-To upgrade to a `loadBalancerIP` later on, you just need to use the previous values file and then sync longhorn with ArgoCD.
+- Port-forwarding the service every time
+- Ingress controller
+
+##### Ingress controller (my current choice)
+
+> [!NOTE]
+> Prerequisites:
+> - [Traefik](https://github.com/aditaranto1028/homelab/blob/main/Documentation/traefik/traefik-install.md)
+> - [Cert-manager](https://github.com/aditaranto1028/homelab/blob/main/Documentation/cert-manager/cert-manager-install.md)
+> - A registered domain (i.e. ditaranto-homelab.com)
+
+Follow my [documentation](https://github.com/aditaranto1028/homelab/blob/main/Documentation/traefik/ingressRoute-and-certificate.md) on how to set up the ingress route, certificate, and published application route.
+
+##### Port-forward
+
+You will need to run this command every time: `kubectl port-forward service/longhorn-frontend 8080:80 -n longhorn-system`.
+
+> [!NOTE]
+> To upgrade to a `loadBalancerIP` later on, you just need to use the previous values file and then sync longhorn with Argo CD.
