@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vmui-certificate
+  namespace: monitoring
+spec:
+  secretName: vmui-certificate-secret
+  issuerRef:
+    name: cloudflare-clusterissuer
+    kind: ClusterIssuer
+  dnsNames:
+    - vmui.ditaranto-homelab.com
