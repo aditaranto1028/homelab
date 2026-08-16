@@ -7,6 +7,7 @@ Before installing Argo CD, you should have the following:
 - `kubectl` command-line tool
 - `kubeconfig` file (default location `~/.kube/config`)
 - CoreDNS
+- Traefik & cert-manager (optional)
 
 ### Install Argo CD
 
@@ -36,7 +37,29 @@ There are many ways to access Argo CD, with some options being:
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
-#### Load balancer (my current choice)
+#### Ingress controller (my current choice)
+
+> [!NOTE]
+> Prerequisites:
+> - [Traefik](https://github.com/aditaranto1028/homelab/blob/main/Documentation/traefik/traefik-install.md)
+> - [Cert-manager](https://github.com/aditaranto1028/homelab/blob/main/Documentation/cert-manager/cert-manager-install.md)
+> - A registered domain (i.e. ditaranto-homelab.com)
+
+Follow my [documentation](https://github.com/aditaranto1028/homelab/blob/main/Documentation/traefik/ingressRoute-and-certificate.md) on how to set up the ingress route, certificate, and published application route.
+
+If you notice you are getting an `ERR_TOO_MANY_REDIRECTS` error, do the following:
+
+- Run the command: `kubectl edit configmap argocd-cmd-params-cm -n argocd`
+- At the bottom of the YAML, put the following:
+
+```yaml
+data:
+  server.insecure: "true"
+```
+
+- Run the command: `kubectl rollout restart deployment argocd-server -n argocd`
+
+#### Load balancer (good alternative)
 
 > [!NOTE]
 > Prerequisites:
