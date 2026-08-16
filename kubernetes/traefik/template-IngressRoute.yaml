@@ -8,6 +8,14 @@ spec:
   entryPoints:
     - websecure
   routes:
+    # --- Redirect route: uncomment to enable root-path redirect ---
+    # - match: Host(`<SERVICE>.ditaranto-homelab.com`) && Path(`/`)
+    #   kind: Rule
+    #   middlewares:
+    #     - name: <SERVICE>-redirect
+    #   services:
+    #     - name: <SERVICE>
+    #       port: <PORT>
     - match: Host(`<SERVICE>.ditaranto-homelab.com`)
       kind: Rule
       services:
@@ -15,3 +23,16 @@ spec:
           port: <PORT>
   tls:
     secretName: <SERVICE>-certificate-secret
+
+# --- Middleware: uncomment and apply separately (or as its own file) to enable the redirect above ---
+# ---
+# apiVersion: traefik.io/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: <SERVICE>-redirect
+#   namespace: <NAMESPACE>
+# spec:
+#   redirectRegex:
+#     regex: "^https://<SERVICE>\\.ditaranto-homelab\\.com/?$"
+#     replacement: "https://<SERVICE>.ditaranto-homelab.com/<PATH>"
+#     permanent: true
