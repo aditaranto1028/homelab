@@ -121,7 +121,7 @@ test-nginx-certificate   True    test-nginx-certificate-secret   28m
 Run the command:
 
 ```bash
-kubectl get secret test-nginx-certificate-secret -n test-nginx -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -text | grep Issuer
+kubectl get secret [certificate name] -n [namespace] -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -text | grep Issuer
 ```
 
 Expected output:
@@ -134,7 +134,7 @@ Expected output:
 Run the command:
 
 ```bash
-kubectl describe certificate test-nginx-certificate -n test-nginx | grep -A10 -e '^Status'
+kubectl describe certificate [certificate name] -n [namespace] | grep -A10 -e '^Status'
 ```
 
 Expected output:
