@@ -1,0 +1,35 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vmui-ingressroute
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`vmui.ditaranto-homelab.com`) && Path(`/`)
+      kind: Rule
+      middlewares:
+        - name: vmui-redirect
+      services:
+        - name: vmselect-vmks-victoria-metrics-k8s-stack
+          port: 8481
+    - match: Host(`vmui.ditaranto-homelab.com`)
+      kind: Rule
+      services:
+        - name: vmselect-vmks-victoria-metrics-k8s-stack
+          port: 8481
+  tls:
+    secretName: vmui-certificate-secret
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: vmui-redirect
+  namespace: monitoring
+spec:
+  redirectRegex:
+    regex: "^https://vmui\\.ditaranto-homelab\\.com/?$"
+    replacement: "https://vmui.ditaranto-homelab.com/select/0/vmui"
+    permanent: true
