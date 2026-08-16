@@ -11,3 +11,16 @@ ingressRoute:
     enabled: true
     entryPoints: [web, websecure]
     matchRule: Host(`traefik.ditaranto-homelab.com`)
+    middlewares:
+      - name: dashboard-auth
+        namespace: traefik
+
+extraObjects:
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: dashboard-auth
+      namespace: traefik
+    spec:
+      basicAuth:
+        secret: traefik-dashboard-auth
