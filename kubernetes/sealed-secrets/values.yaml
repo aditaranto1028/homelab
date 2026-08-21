@@ -1,0 +1,51 @@
+fullnameOverride: sealed-secrets-controller
+replicaCount: 1
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+containerSecurityContext:
+  enabled: true
+  runAsNonRoot: true
+  runAsUser: 1001
+podSecurityContext:
+  enabled: true
+  fsGroup: 65534
+service:
+  type: ClusterIP
+  port: 8080
+metrics:
+  serviceMonitor:
+    enabled: false
+    namespace: monitoring
+    interval: 30s
+keyrenewperiod: "720h"
+updateStatus: true
+networkPolicy:
+  enabled: true
+rbac:
+  create: true
+  pspEnabled: false
+serviceAccount:
+  create: true
+  name: sealed-secrets-controller
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8081"
+nodeSelector: {}
+tolerations: []
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - sealed-secrets
+          topologyKey: kubernetes.io/hostname
