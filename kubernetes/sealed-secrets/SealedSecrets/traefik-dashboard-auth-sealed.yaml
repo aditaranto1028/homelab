@@ -1,0 +1,19 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: traefik-dashboard-auth
+  namespace: traefik
+spec:
+  encryptedData:
+    users: AgCjUw41gVwQ13f/gE8de9dHbmrgKClG6gizQFqFlqtACYASx4CE6cLG8lcZ/5JZYkluPk47he/WZmODxaOM70GaE4QOL6EDWx8ocB6gYormABLpWJYt/qGD8HNEMMr85W6pBJEA+mf0eiSQ84+FI+oUHdaTVO6DLZ7SqW2le8JUM8Y+6WL8ANTjK63dcmc4BZq525ZlVyICl2kOHgdDdV1Q8X2FJllaAdRtc8BHD6TBVZwSbeM1AsGApgFvu+Gdpgb9MGepEdoAzAmWJuDXSTrlOcYDx/u5wcDZehygxVuHrOWXSnrxYRD2mjcELbVyuzHgLbLD1OdAQi+WgkER3aMtF18eDw8Cm0bcKnQRtAV+tSUILO9Wdu2HMPLAy5LvfOkWlRjpveaxGKkK6HHFAI5dcjbGynDu/3jx3fWEGFVBco/knyki1gjpuxFDlFhXxxGKhgXRT9/gwylVtUZlf3hp6cbZn6eaI7lSqEoxi+PA9jYAN6E2dgPU6MaOLoow9B2Z1gGfPIl8XejDbeeYDTVLHUPIo7S4kMx3qtKNVH6tiObPtCUtpf1h/rm0LjNv69Ygr1XqnwRVGhJPaGg+Ax3IdAvO8KltvmYQ/oRFfT0Moanh0qmKbufDWNBOT+5zm2L1McRMJub2lfg9kCCvEuFdTnUjxta3aPLSMRjrnkZLJ99n8OYBlvnYvSkst7Ix/miAi5xLk8QFZRNFP7Pyayg0gLMnFsNe5+sxlI9IHVReqCyt+Ua+QcMXxzHR
+  template:
+    metadata:
+      annotations:
+        sealedsecrets.bitnami.com/managed: "true"
+      labels:
+        app.kubernetes.io/managed-by: sealed-secrets
+        app.kubernetes.io/name: sealed-secrets
+      name: traefik-dashboard-auth
+      namespace: traefik
+    type: Opaque
