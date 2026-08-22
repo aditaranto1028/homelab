@@ -42,6 +42,12 @@ admin:$apr1$c85VBtWB$5/6BWGxw56Q6BwPdNAfYH0
 
 #### Create the Kubernetes secret
 
+##### Bitnami sealed secret
+
+I use Bitnami Sealed Secrets to manage and commit my Kubernetes secrets directly to GitHub. You can find my documentation on how to set up Sealed Secrets [here](https://github.com/aditaranto1028/homelab/blob/main/Documentation/sealed-secrets/sealed-secrets-install.md).
+
+##### Manually
+
 Run the command:
 
 ```bash

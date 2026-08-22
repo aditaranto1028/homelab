@@ -57,6 +57,12 @@ Navigate to https://dash.cloudflare.com and do the following:
 
 ### Create the Cloudflare tunnel token secret
 
+#### Bitnami sealed secret
+
+I use Bitnami Sealed Secrets to manage and commit my Kubernetes secrets directly to GitHub. You can find my documentation on how to set up Sealed Secrets [here](https://github.com/aditaranto1028/homelab/blob/main/Documentation/sealed-secrets/sealed-secrets-install.md).
+
+#### Manually
+
 Run the command:
 
 ```bash
