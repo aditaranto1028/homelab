@@ -1,0 +1,19 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: cf-tunnel
+  namespace: default
+spec:
+  encryptedData:
+    token: AgBSa+3w95X8G5OTFxuI/zT2p4isJcsGKFAOiRObsbZ3MDcwhG8RgC5OyG+CQDvtJgyVLT/7XnKrcUkMyTDUw/D1VjxClZ241kFZMGW2XP+XSl/XjkuGERaoVmX2j6hJ3vnHpCWuvDgKmcTpDKnb0cMbcKMLNJGUD8qiF4eVpydjJaoueXJoftZ4gp4j2l6JP93SMrIB6VCU2HPPAuGtS6179VArGZUqUHUQtZCXdaNv6OBuBY+HbuEsMQa/XtqS16dJFNYJZdx4O2nHd0x9QwVjUNE4o8/bNUIwcLNti1OGh0O3hss8WYacin1KIWSu4rWZJQq9urn0T91HzVQuE/N4EVDWNk4tIdPa5BduuGphWeN8yKELZ3gCPnU0cRcTjCMIM+JJfw13mjze7tXr8rL4q0SUV2hEAj8cHh+sHcB2URsE+9HXg2zG0mwUbGsEERv20rENP+KMZgYZTvaSzDVC/4WkmWKjJB4kxpzsTE7bpIn5DU3eNJSOSvJPokHwxlh+cLER288gWOa/zzZfsGa1EjLAZvtOQ9HcaQ90PWKXcwPfMEG3Bhnpmxt+7N3n24rcY6i5Pruu8Y1hQBRdY8RK3F0cmGYBn37lQRM6kpM8hZ/qZm4CfgojOYIYcFctL3uMILhOxTdXHeNcdhPc5yRM0+qLxPdQVEYJRv2A47DOfvIFJLjFrr5aZW2AlmYCuCWwy03/8feMjiBEsZfzbGHsZd1nGrPHdyZ6LS9ojEDNrw7MRiZw+5UC8ZmCnh0f0jzqEmOK5h/EznB000K60cA+zIjcAzKc0TFvEk3U/eW0+Ih6tKXd77TjROoi6PW6ykIYxpFfOiPq3jIE4QsNwPeHEUVtpbivSSwWZd/iFvmXh83A/4ObFPeSugf+ycsDNiP0pS4Xd1/4mWDPRCOc++uTuSCG2/FCs5vOw2I+DCfF/g3WnWWpG+7Z
+  template:
+    metadata:
+      annotations:
+        sealedsecrets.bitnami.com/managed: "true"
+      labels:
+        app.kubernetes.io/managed-by: sealed-secrets
+        app.kubernetes.io/name: sealed-secrets
+      name: cf-tunnel
+      namespace: default
+    type: Opaque
