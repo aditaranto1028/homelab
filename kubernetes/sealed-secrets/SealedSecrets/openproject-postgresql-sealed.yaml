@@ -1,0 +1,20 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: openproject-postgresql
+  namespace: openproject
+spec:
+  encryptedData:
+    password: AgCUwg5UHy+YwDZtJqUWK/YxPsalkfagvgb3i4mSsF34OHApyY8Q4cO1zC6GH0nQsMfmwKSUDwp2YeasHx03/wSuIuQUtizcePuZZ2fZv9pyfsNTk8jCGAo1VPK3rp9YuUmzj16w5MeO5nR82f/90kRzWz25cN/Hq2XXViQIPMxhn7IkoDfPROq1Y0D8JRj5uQntS/+jqb6Hk1yW5aYTgPTPZHrejm12ujUNZ6PUtbSqhwKghw+hg5d/5IsPwCdu8XLJ7/x2/djkwQoBevoy8AhLeYTsqvrAt0Cksw7sb2Qvi8zCTIvlor5DvyMvVjwvUjjNUSSax2LK89ZZnT4+Idt3qw9NVDfrYSK3GPp0BNndHaTScyqnjlRkPw9tuSWyacV2XrOiE+Rbz1e5Q8z6GQbqxAmdAGrs6hvScW2SJKKJCx9HbnTGEf4v2KnUUBGHsPVyk6SXWjbL9SQgV1rZqi0OCGwCZLfblVXH7srdIWiUsgo0tO7OT0TUx/Vtvns7C1ZMLs9+coHBiP7iN9mxZs17FqP8kx3PL5Tw0aQlnnIMxz3Wdbv/a10i9b2ILuLcw9shNeUbQscOJxTFFkZNkGYqMvlR7i0Tt7tjpJm9xi5sDRmyCZa2Zqw0w2Qon+ipii/QKxk8KJuCyXilez4xb+YYvtMfU1gXiv6ZUWhyiDF3v1uUoiMI9fsmX+AgN3h2QG4cXW3Kp0+dYS5rLGDVl8+Ugcct+2sumu+anc49hBjvRUspM5/lP5vOEDgvVhJrsJM=
+    postgres-password: AgCVvoxQlPzYPKGPjMcd5DVJs3zj95xaPksEMu9TXzbJXasEVrNXqd1lmgLrSM34GK0bO7Qir58LF+vxamgnVkJP5Ud//CBS79dzexr1lLgRytVUbM814okFdptGKJIhtB5M9GOhv/0vST5Mx98idbB9oJmZs47Oy82sBM9nKc5EqQJBx9H+A0BoCwUwjuj/gJh58KANeks+hvDyLrgWsiRh4jTOClJ5YSFyoFHiBBHAt5uJGNNJydDxG2tC9+9lch9y/LGuV6vAJ9nxnCJU9YD2k036XrBzMd+X2tWPClBdKf9hOALxEoBLUpcmGlkcAXUs0NEqSFANQBhwjydR3FBIzjeFRk4zqDxNmhV2UqOX7tSo4yNa2lUfXEzsjuzYZE4b7NsKZkOOdROGZc6Gl+Xczb6mOO9v2a3bc2bsobvdnlSm1+S7mJZqxD3rsxXDjH7avwJfdcT9OHE547vfYlHlK0UaCZLXS+ZC1rSOH45PzNgSsdt9J4m6JCVCL/gxY9rEk808sjRzOFG2Z9pOHGQ0CJMdU20WkiSAG7QdjmTW02wRAwmQ+xxKWxBH+XfMbP2EerBmpre8BKdpOFNb4/4sJZpDwUieVek/NMGwkd+rn4b0nu6W03E47FldRFOjrWowNq+FLZLSJXZc4YFzisSwy8RS8IrGEm7qIcE2VCq0V6OegAMQensCnTF2bjQ/ZvHKrAlmJehvXgE9CvFblEyLLR9X/VqwW+4rGd4yJbdNYUiAE4gXdfsKj0skcx2kfVE=
+  template:
+    metadata:
+      annotations:
+        sealedsecrets.bitnami.com/managed: "true"
+      labels:
+        app.kubernetes.io/managed-by: sealed-secrets
+        app.kubernetes.io/name: sealed-secrets
+      name: openproject-postgresql
+      namespace: openproject
+    type: Opaque
