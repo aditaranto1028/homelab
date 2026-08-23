@@ -224,3 +224,84 @@ You will need to run this command every time: `kubectl port-forward service/long
 
 > [!NOTE]
 > To upgrade to a `loadBalancerIP` later on, you just need to use the previous values file and then sync longhorn with Argo CD.
+
+### Add more space to Longhorn
+
+When I first started using Longhorn, I noticed it was only using ~140 GB while I had a 512 GB NVMe in my node.
+
+If there is unallocated space on the disk, you can add more space by doing the following:
+
+#### Create a Talos Linux patch file
+
+Create a file with the contents below:
+
+```yaml
+---
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn
+provisioning:
+  diskSelector:
+    match: disk.transport == 'nvme'
+  minSize: 340GB # Replace
+  # maxSize: 360GB # Replace
+  grow: true
+filesystem:
+  type: xfs
+```
+
+> [!NOTE]
+> You can modify the minimum and maximum size of the added space in the YAML file. If you leave `maxSize` commented out, it will take up the remaining space.
+
+#### Apply the Talos Linux patch file
+
+Run the command:
+
+```bash
+talosctl patch mc -n [node IP] --patch-file longhorn-volume.yaml
+```
+#### Verify the volume status
+
+Run the command:
+
+```bash
+talosctl -n [node IP] get volumestatus | grep longhorn
+```
+
+Expected output:
+
+```text
+192.168.1.11   runtime     MountStatus   u-longhorn                          2         /dev/nvme0n1p5   /var/mnt/longhorn                   xfs          u-longhorn
+```
+
+#### Verify the mount status
+
+Run the command:
+
+```bash
+talosctl -n [node IP] get mountstatus | grep longhorn
+```
+
+Expected output:
+
+```text
+192.168.1.11   runtime     MountStatus   u-longhorn                          2         /dev/nvme0n1p5   /var/mnt/longhorn                   xfs          u-longhorn
+```
+
+### Add the allocated space in Longhorn UI
+
+Access the longhorn UI and do the following:
+- Select the `Nodes` tab
+- Find the node you just applied the patch to
+- Select the 3 dots drop down menu
+- Select `Edit node and disks`
+- Scroll down and select `Add Disk`
+- Enter the following information:
+  - Name: choose whatever you want (e.g. nvme-extra)
+  - Disk Type: File System
+  - Path: output from the `mountstatus` command (i.e. `/var/mnt/longhorn`)
+  - Storage Reserved: ~10% of the allocated volume
+  - Scheduling: Enable
+  - Eviction Requested: False
+- Select `Save`
+- After a couple of seconds, you should see the change reflected in the UI
