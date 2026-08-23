@@ -1,0 +1,51 @@
+ingress:
+  ingressClassName: "traefik"
+  annotations:
+    cert-manager.io/cluster-issuer: "cloudflare-clusterissuer"
+  host: "openproject.ditaranto-homelab.com"
+  tls:
+    secretName: "openproject-certificate-secret"
+image:
+  imagePullPolicy: "IfNotPresent"
+  tag: "16.5-slim"
+memcached:
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "250m"
+openproject:
+  admin_user:
+    password: 'admin'
+    name: 'Anthony DiTaranto'
+    mail: 'aditaranto1028@gmail.com'
+persistence:
+  size: "15Gi"
+  storageClassName: "longhorn"
+postgresql:
+  auth:
+    existingSecret: "openproject-postgresql"
+    secretKeys:
+      adminPasswordKey: "postgres-password"
+      userPasswordKey: "password"
+  primary:
+    persistence:
+      enabled: true
+      size: "8Gi"
+      storageClass: "longhorn"
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "1"
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "250m"
+  limits:
+    memory: "2Gi"
+    cpu: "1500m"
