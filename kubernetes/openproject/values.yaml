@@ -4,7 +4,7 @@ ingress:
     cert-manager.io/cluster-issuer: "cloudflare-clusterissuer"
   host: "openproject.ditaranto-homelab.com"
   tls:
-    secretName: "openproject-certificate-secret"
+    secretName: "openproject-certificate"
 image:
   imagePullPolicy: "IfNotPresent"
   tag: "16.5-slim"
