@@ -1,0 +1,24 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openproject
+  namespace: argocd
+spec:
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  project: default
+  sources:
+    - chart: openproject
+      repoURL: https://charts.openproject.org
+      targetRevision: 13.10.2
+      helm:
+        valueFiles:
+          - $values/kubernetes/openproject/values.yaml
+    - repoURL: https://github.com/aditaranto1028/homelab.git
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openproject
