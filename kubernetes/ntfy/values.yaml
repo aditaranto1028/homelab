@@ -1,0 +1,7 @@
+ntfy:
+  baseUrl: "https://ntfy.ditaranto-homelab.com"
+  authDefaultAccess: "deny-all"
+persistence:
+  storageClass: "longhorn"
+ingress:
+  enabled: false
