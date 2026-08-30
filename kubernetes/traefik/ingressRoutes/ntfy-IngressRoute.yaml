@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ntfy-ingressroute
+  namespace: ntfy
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`ntfy.ditaranto-homelab.com`)
+      kind: Rule
+      services:
+        - name: ntfy-ntfy
+          port: 80
+  tls:
+    secretName: ntfy-certificate-secret
